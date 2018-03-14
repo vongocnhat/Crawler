@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2018 at 04:23 AM
+-- Generation Time: Mar 14, 2018 at 05:01 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -84,7 +84,9 @@ INSERT INTO `key_words` (`id`, `name`, `active`) VALUES
 (7, 'sĩ quan', 0),
 (8, 'tàu sân bay', 0),
 (9, 'vợ', 1),
-(10, 'bóng đá', 1);
+(10, 'bóng đá', 1),
+(11, 'trẻ', 1),
+(14, 'Gạc Ma', 1);
 
 -- --------------------------------------------------------
 
@@ -98,7 +100,6 @@ CREATE TABLE `r_s_s_e_s` (
   `menuTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `bodyTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `exceptTag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ignoreHomePage` tinyint(1) NOT NULL DEFAULT '1',
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -106,9 +107,9 @@ CREATE TABLE `r_s_s_e_s` (
 -- Dumping data for table `r_s_s_e_s`
 --
 
-INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `ignoreHomePage`, `active`) VALUES
-(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 1, 1),
-(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', 1, 0);
+INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `active`) VALUES
+(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 1),
+(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', 1);
 
 -- --------------------------------------------------------
 
@@ -126,7 +127,7 @@ CREATE TABLE `video_tags` (
 --
 
 INSERT INTO `video_tags` (`id`, `name`) VALUES
-(1, 'video, .viewVideoPlay');
+(2, 'video, .viewVideoPlay');
 
 -- --------------------------------------------------------
 
@@ -212,25 +213,25 @@ ALTER TABLE `contents`
 -- AUTO_INCREMENT for table `detail_websites`
 --
 ALTER TABLE `detail_websites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `key_words`
 --
 ALTER TABLE `key_words`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `r_s_s_e_s`
 --
 ALTER TABLE `r_s_s_e_s`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `video_tags`
 --
 ALTER TABLE `video_tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `websites`
