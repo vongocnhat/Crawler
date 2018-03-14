@@ -9,7 +9,6 @@
 </head>
 <body>
 <a class="btn btn-success" style="margin: 15px;" href="{{ route('website.index') }}">Trang Quản Lý Admin</a>
-<a class="btn btn-success" style="margin: 15px 15px 15px 0;" href="{{ route('getRSS') }}">Trang Lấy Tin</a>
 <table id="example" cellspacing="0" width="100%">
   <thead>
       <tr>

@@ -71,7 +71,13 @@
         <i class="fas fa-globe"></i>
             <span class="nav-link-text">Video Tag</span>
           </a>
-        </li>   
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
+          <a class="nav-link" href="{{ route('getRSS') }}">
+        <i class="fas fa-globe"></i>
+            <span class="nav-link-text">Trang Lấy Tin</span>
+          </a>
+        </li>
       </ul>
       <ul class="navbar-nav sidenav-toggler">
         <li class="nav-item">
