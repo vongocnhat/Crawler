@@ -73,7 +73,7 @@
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
-          <a class="nav-link" href="{{ route('getRSS') }}">
+          <a class="nav-link" href="{{ route('getRSS') }}" target="_blank">
         <i class="fas fa-globe"></i>
             <span class="nav-link-text">Trang Lấy Tin</span>
           </a>
