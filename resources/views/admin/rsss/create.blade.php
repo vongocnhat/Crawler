@@ -27,17 +27,6 @@
     {{form::label('exceptTag','exceptTag:')}}
     {{form::text('exceptTag','',['class'=>'form-control'])}}
   </div>
-  <div class="form-group">
-    {{form::label('ignoreHomePage','ignoreHomePage:')}}
-    <div class="form-check form-check-inline">
-      {!! Form::radio('ignoreHomePage',1, true, ['class' =>'form-check-input', 'id' => 'yes1']) !!}
-      {{Form::label('yes1','Yes',['class'=>'form-check-label'])}}
-     </div>
-    <div class="form-check form-check-inline">
-      {!!Form::radio('ignoreHomePage',0, null, ['class' =>'form-check-input', 'id' => 'no1'])!!}
-      {{Form::label('no1','No',['class'=>'form-check-label'])}}  
-    </div>
-  </div>
   <div class="form-group" >
     {{form::label('Active','Active:')}}
     <div class="form-check form-check-inline">

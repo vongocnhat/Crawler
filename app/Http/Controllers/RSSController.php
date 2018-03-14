@@ -48,12 +48,9 @@ class RSSController extends Controller
                     // this is delivered each successful response
                     $document = new Crawler((string)$response->getBody());
                     $nodes = $document->filter($RSS->menuTag);
-                    $startI = 0;
-                    if($RSS->ignoreHomePage && $nodes->count() > 1)
-                        $startI = 1;
-                    for ($i=0; $i < $nodes->count() - $startI; $i++) { 
+                    for ($i=0; $i < $nodes->count(); $i++) { 
                         # code...
-                        $link = $nodes->eq($i+$startI)->attr('href');
+                        $link = $nodes->eq($i)->attr('href');
                         if(!$this->startWithHtml($link))
                             $link = $this->getHostName($RSS->domainName).$link;
                         $links[$i] = $link;

@@ -30,7 +30,6 @@
                   <th>menu Tag</th>
                   <th>body Tag</th>
                   <th>except Tag</th>
-                  <th>ignore Home Page</th>
                   <th>active</th>
                   <th>Update</th>
                   <th>Delete</th>
@@ -43,7 +42,6 @@
                   <th>menu Tag</th>
                   <th>body Tag</th>
                   <th>except Tag</th>
-                  <th>ignore Home Page</th>
                   <th>active</th>
                   <th>Update</th>
                   <th>Delete</th>
@@ -57,7 +55,6 @@
                   <td>{{$data->menuTag}}</td>
                   <td>{{$data->bodyTag}}</td>
                   <td>{{$data->exceptTag}}</td>
-                  <td>{{$data->ignoreHomePage ? 'Yes' : 'No' }}</td>
                   <td>{{$data->active ? 'Yes' : 'No' }}</td>
                   <td><a href="{{ URL::route('rss.edit', ['rss' => $data->id]) }}" class="btn btn-success">Edit</a></td>
                   <td>

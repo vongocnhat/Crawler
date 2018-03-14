@@ -8,7 +8,7 @@ class RSS extends Model
 {
     //
     protected $fillable = [
-        'domainName', 'menuTag', 'bodyTag', 'exceptTag', 'ignoreHomePage', 'active'
+        'domainName', 'menuTag', 'bodyTag', 'exceptTag', 'active'
     ];
     public $timestamps = false;
 }
