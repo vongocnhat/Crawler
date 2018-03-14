@@ -17,11 +17,11 @@
 
 {{ Form::open(array('route'=>'keyword.store','method'=>'post'))}}
 <div class="form-group">
-{{ Form::label('Name','DomainName')}}
-{{ Form::text('Name','', ['class'=>'form-control']) }}
+{{ Form::label('name','DomainName')}}
+{{ Form::text('name','', ['class'=>'form-control']) }}
 </div>  
 <div class="form-group" >
-  {{form::label('Active','Active:')}}
+  {{form::label('active','Active:')}}
   <div class="form-check form-check-inline">
     {!! Form::radio('active',1, true, ['class' =>'form-check-input', 'id' => 'yes']) !!}
     {{Form::label('yes','Yes',['class'=>'form-check-label'])}}
