@@ -28,7 +28,7 @@ class RSSController extends Controller
         $VideoTagDB = VideoTag::first();
         if(is_null($VideoTagDB))
         {
-            echo '<script>alert("Trả Lại VideoTag Cho Mình :v");</script>';
+            echo '<script>alert("VideoTag Không Được Để Trống");</script>';
             return;        
         }
         $this->videoTag = $VideoTagDB->name;
@@ -77,7 +77,7 @@ class RSSController extends Controller
             $promise->wait();
         }
         //60s tải 1 lần
-        $refreshTime = 3600000;
+        $refreshTime = 15000;
         if($this->hasError)
         {
             //5s tải 1 lần
@@ -108,7 +108,6 @@ class RSSController extends Controller
                 $tempDocument = new Crawler((string)$response->getBody());
                 if($tempDocument->count() > 0)
                 {
-                    echo 'Đã Tải Được Trang<br>';
                     $this->summaryBody .= $tempDocument->html();
                 }
             },
@@ -126,7 +125,7 @@ class RSSController extends Controller
     private function getNewsRSS($RSS) {
         // table contents
         $domainName = $RSS->domainName;
-        $listLinkInserted = [];
+        $listTitleInserted = [];
         $inserted = false;
         $title;
         $link;
@@ -176,8 +175,8 @@ class RSSController extends Controller
                     if($this->matchChar($title, $keyWord->name))
                     {
                         $inserted = false;
-                        foreach ($listLinkInserted as $key => $linkInserted) {
-                            if($linkInserted == $link)
+                        foreach ($listTitleInserted as $key => $titleInserted) {
+                            if($titleInserted == $title)
                             {
                                 $inserted = true;
                                 // break listLinkInserted
@@ -219,7 +218,7 @@ class RSSController extends Controller
                             }
                             // */add rss to database
                             $content->save();
-                            array_push($listLinkInserted, $link);
+                            array_push($listTitleInserted, $title);
                         }
                         //break keyWords;
                         break;

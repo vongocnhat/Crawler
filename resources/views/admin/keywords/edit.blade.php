@@ -16,7 +16,7 @@
   
 
 <div class="form-group">
-{{ Form::label('name','name')}}
+{{ Form::label('name','Name')}}
 </div>
 <div class="form-group"> 
 {{ Form::text('name',$edit->name, ['class'=>'form-control']) }}

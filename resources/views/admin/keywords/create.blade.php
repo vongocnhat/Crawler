@@ -17,7 +17,7 @@
 
 {{ Form::open(array('route'=>'keyword.store','method'=>'post'))}}
 <div class="form-group">
-{{ Form::label('name','DomainName')}}
+{{ Form::label('name','Name')}}
 {{ Form::text('name','', ['class'=>'form-control']) }}
 </div>  
 <div class="form-group" >
