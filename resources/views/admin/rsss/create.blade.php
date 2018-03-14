@@ -13,19 +13,23 @@
  
   <div class="form-group">
     {{ Form::label('domainName','domainName')}}
-    {{ Form::text('domainName','', ['class'=>'form-control']) }}
+    {{ Form::text('domainName',null, ['class'=>'form-control']) }}
   </div>  
   <div class="form-group">
     {{ Form::label('menuTag','menuTag ')}}
-    {{ Form::text('menuTag','',['class'=>'form-control'])}}
+    {{ Form::text('menuTag',null,['class'=>'form-control'])}}
   </div>
   <div class="form-group">
     {{form::label('bodyTag','bodyTag')}}
-    {{form::text('bodyTag','',['class'=>'form-control'])}}
+    {{form::text('bodyTag',null,['class'=>'form-control'])}}
   </div>
   <div class="form-group">
     {{form::label('exceptTag','exceptTag:')}}
-    {{form::text('exceptTag','',['class'=>'form-control'])}}
+    {{form::text('exceptTag',null,['class'=>'form-control'])}}
+  </div>
+  <div class="form-group">
+    {{form::label('ignoreRSS','ignoreRSS:')}}
+    {{form::textarea('ignoreRSS',null,['class'=>'form-control', 'rows' => '4'])}}
   </div>
   <div class="form-group" >
     {{form::label('Active','Active:')}}

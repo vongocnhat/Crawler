@@ -24,6 +24,10 @@
     {{form::label('exceptTag','exceptTag:')}}
     {{form::text('exceptTag',null,['class'=>'form-control'])}}
   </div>
+  <div class="form-group">
+    {{form::label('ignoreRSS','ignoreRSS:')}}
+    {{form::textarea('ignoreRSS',null,['class'=>'form-control', 'rows' => '4'])}}
+  </div>
   <div class="form-group" >
     {{form::label('Active','Active:')}}
     <div class="form-check form-check-inline">

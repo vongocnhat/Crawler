@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2018 at 05:01 AM
+-- Generation Time: Mar 14, 2018 at 05:40 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -100,6 +100,7 @@ CREATE TABLE `r_s_s_e_s` (
   `menuTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `bodyTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `exceptTag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ignoreRSS` text COLLATE utf8mb4_unicode_ci,
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -107,9 +108,9 @@ CREATE TABLE `r_s_s_e_s` (
 -- Dumping data for table `r_s_s_e_s`
 --
 
-INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `active`) VALUES
-(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 1),
-(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', 1);
+INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `ignoreRSS`, `active`) VALUES
+(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 'http://www.24h.com.vn/upload/rss/euro2016.rss', 1),
+(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -225,7 +226,7 @@ ALTER TABLE `key_words`
 -- AUTO_INCREMENT for table `r_s_s_e_s`
 --
 ALTER TABLE `r_s_s_e_s`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `video_tags`

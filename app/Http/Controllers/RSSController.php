@@ -53,7 +53,16 @@ class RSSController extends Controller
                         $link = $nodes->eq($i)->attr('href');
                         if(!$this->startWithHtml($link))
                             $link = $this->getHostName($RSS->domainName).$link;
-                        $links[$i] = $link;
+                        $checkIgnoreRSS = false;
+                        foreach (explode(',', $RSS->ignoreRSS) as $key => $ignoreRSSValue) {
+                            if($ignoreRSSValue == $link)
+                            {
+                                $checkIgnoreRSS = true;
+                                break;
+                            }
+                        }
+                        if($checkIgnoreRSS == false)
+                            array_push($links, $link);
                         // echo $links[$i].'</br>';
                     }
                     $this->setSummaryBody($links);
