@@ -55,7 +55,7 @@ class RSSController extends Controller
                             $link = $this->getHostName($RSS->domainName).$link;
                         $checkIgnoreRSS = false;
                         foreach (explode(',', $RSS->ignoreRSS) as $key => $ignoreRSSValue) {
-                            if($ignoreRSSValue == $link)
+                            if(trim($ignoreRSSValue) == $link)
                             {
                                 $checkIgnoreRSS = true;
                                 break;
