@@ -70,11 +70,10 @@ class RSSController extends Controller
                     $links = [];
                     $this->getNewsRSS($RSS);
                 },
-                'rejected' => function ($reason, $index) {
+                'rejected' => function ($reason, $index) use ($RSS) {
                     // this is delivered each failed request
-                    echo '<span style="color:red">Rơi Mạng Hoặc Sai Đường Dẫn RSS</span><br>';
-                    echo $reason;
-                    // $this->hasError = true;
+                    echo '<span style="color:red">Không Thể Kết Nối Đến: '.$RSS->domainName.' Hoặc Sai Đường Dẫn RSS</span><br>';
+                    $this->hasError = true;
                 },
             ]);
             // Initiate the transfers and create a promise
