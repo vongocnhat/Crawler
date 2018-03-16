@@ -18,6 +18,22 @@ class HomeController extends Controller
     public function newsAjax()
     {
         $contents = Content::where('active', 1)->orderBy('pubDate', 'DESC')->get();
+        $keyWords = KeyWord::Where('active', 1)->get();
+        if($keyWords->count() > 0)
+            foreach ($contents as $key => $content) {
+                $keep = false;
+                foreach ($keyWords as $keyWord) {
+                    if($this->matchChar($content->title, $keyWord->name))
+                    {
+                        $keep = true;
+                        break;
+                    }
+                }
+                if($keep == false)
+                {
+                    $contents->forget($key);
+                }
+            }
         $toDayNewsCount = 0;
         foreach ($contents as $item) {
             $pubDate = date("Y-m-d", strtotime($item->pubDate));
@@ -60,5 +76,37 @@ class HomeController extends Controller
         $html = file_get_contents($content->link);
         // $html = str_replace('</head>','<link rel="stylesheet" href="http://localhost/Crawler/public/styles/nhat.css" /></head>', $html);
         echo $html;
+    }
+
+    private function matchChar($string, $keyWord) {
+        $string = ' '.$string.' ';
+        $string = $this->removeSymbol($string);
+        $keyWord = $this->removeSymbol($keyWord);
+        $index = stripos($string, $keyWord);
+        if($index == true && gettype($index) == 'integer')
+        {
+            $indexBefore = $index-1;
+            $indexAfter = $index+strlen($keyWord);
+            $charBefore = substr($string, $indexBefore, 1);
+            $charAfter = substr($string, $indexAfter, 1);
+            // '*How area you?*' contain 'how are' = false
+            // '*How are" you?*' contain 'how are' = true
+            if(!(ctype_alpha($charBefore) || ctype_alpha($charAfter)))
+                return true;
+        }
+        return false;
+    }
+    private function removeSymbol($string) {
+        $charStrings = str_split($string);
+        $string = '';
+        $asc = -1;
+        foreach ($charStrings as $value) {
+            $asc = ord($value);
+            if(!(($asc >= 33 && $asc <= 47) || ($asc >= 58 && $asc <= 64) || ($asc >= 91 && $asc <= 96) || ($asc >= 123 && $asc <= 126)))
+                $string .= $value;
+        }
+        // thay thế nhiều dấu space thành 1 dấu
+        $string = preg_replace('!\s+!', ' ', $string);
+        return $string;
     }
 }
