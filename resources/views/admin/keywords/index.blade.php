@@ -20,42 +20,40 @@
         <div class="card-body card-body-padding">
 
           <div class="table-responsive">
-
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Active</th>
-                  <th>Update</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tfoot>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Active</th>
-                  <th>Update</th>
-                  <th>Delete</th>
-                </tr>
-              </tfoot>
-              <tbody>
-                @foreach($key as $data)
-                <tr>
-                  <td>{{$data->id}}</td>
-                  <td>{{$data->name}}</td>
-                  <td>{{$data->active ? 'Yes' : 'No' }}</td>
-                  <td><a href="{{ URL::route('keyword.edit', ['keyword' => $data->id]) }}" class="btn btn-success">Edit</a></td>
-                  <td>
-                    {!! Form::open(['method' => 'DELETE', 'route' => ['keyword.destroy', 'keyword' => $data->id]]) !!}
-                      {{ Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => "return confirm('Xóa KeyWord Có Name: $data->name , Id: $data->id ?')"]) }}
-                    {!! Form::close() !!}
-                  </td>
-                </tr>
-          @endforeach
-      </tbody>
-  </table>
+            {!! Form::open(['method' => 'DELETE', 'route' => ['keyword.destroy', 'keyword' => 0]]) !!}
+              {{ Form::submit('Delete', ['class' => 'btn btn-danger btnDelete', 'onclick' => "return confirm('Xóa Tất Cả Nội Dung Được Checked Trong Trang Này ?')"]) }}
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" class="thCbDelete"></th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Active</th>
+                    <th>Update</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th><input type="checkbox" class="thCbDelete"></th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Active</th>
+                    <th>Update</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  @foreach($key as $data)
+                  <tr>
+                    <td><input type="checkbox" class="tdCbDelete" name="idCheckbox[]" value="{{$data->id}}"></td>
+                    <td>{{$data->id}}</td>
+                    <td>{{$data->name}}</td>
+                    <td>{{$data->active ? 'Yes' : 'No' }}</td>
+                    <td><a href="{{ URL::route('keyword.edit', ['keyword' => $data->id]) }}" class="btn btn-success">Edit</a></td>
+                  </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {!! Form::close() !!}
 </div>
 </div>
 </div>

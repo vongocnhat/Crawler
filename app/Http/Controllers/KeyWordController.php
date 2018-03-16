@@ -87,10 +87,11 @@ class KeyWordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $key = keyword::findorfail($id);
-        $key->delete();
+        $ids = $request->input('idCheckbox');
+        if($ids != null)
+            KeyWord::whereIn('id', $ids)->delete(); 
         return back();
     }
 }

@@ -236,12 +236,11 @@
   @yield('script')
   <script type="text/javascript">
     $('#dataTable').dataTable( {
-      "order": [],
       "columnDefs": [ {
-      "targets"  : 0,
+      "targets": 0,
       "orderable": false,
-    }]
-    } );
+      } ]
+    });
   </script>
   <script type="text/javascript">
     //delete multi

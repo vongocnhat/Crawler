@@ -17,12 +17,10 @@
         <div class="card-body card-body-padding">
 
           <div class="table-responsive">
-            {!! Form::open(['method'=>'DELETE', 'route'=>['website.destroy', 'website' => 0]])!!}
-              {{ Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => "return confirm('Xóa Tất Cả Nội Dung Được Checked Trong Trang Này ?')"]) }}
+
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
-                  <th><input type="checkbox" class="thCbDelete"></th>
                   <th>Id</th>
                   <th>Domain Name</th>
                   <th>Menu Tag</th>
@@ -33,11 +31,11 @@
                   <th>BodyTag</th>
                   <th>Active</th>
                   <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tfoot>
                 <tr>
-                  <th><input type="checkbox" class="thCbDelete"></th>
                   <th>Id</th>
                   <th>Domain Name</th>
                   <th>Menu Tag</th>
@@ -48,13 +46,13 @@
                   <th>BodyTag</th>
                   <th>Active</th>
                   <th>Edit</th>
+                  <th>Delete</th>
           </td>
                 </tr>
               </tfoot>
               <tbody>
                 @foreach($website_data as $data)
                 <tr>
-                  <td><input type="checkbox" class="tdCbDelete" name="idCheckbox[]" value="{{$data->id}}"></td>
                   <td>{{ $data->id }}</td>
                   <td>{{ $data->domainName }}</td>
                   <td>{{ $data->menuTag }}</td>
@@ -66,12 +64,16 @@
                   <td>{{ $data->active ? 'Yes' : 'No' }}</td>
                   <td>
                     <a href="{{ route('website.edit', ['website' => $data->id]) }}" class="btn btn-info">Edit</a>
+                  </td>        
+                  <td>
+                    {!! Form::open(['method'=>'DELETE', 'route'=>['website.destroy', 'website' => $data->id]])!!}
+                      {{ Form::submit('DELETE', ['class' => 'btn btn-danger', 'onclick' => "return confirm('Xóa Website Có Domain Name: $data->domainName , Id: $data->id ?')"]) }}
+                    {!! Form::close()!!}
                   </td>
                 </tr>
                 @endforeach
               </tbody>
             </table>
-            {!! Form::close()!!}
           </div>
         </div>
 @stop

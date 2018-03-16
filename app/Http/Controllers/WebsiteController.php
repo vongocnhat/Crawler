@@ -102,14 +102,11 @@ class WebsiteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {// nhut oi cho tao hoi ta ko biet bo mau//
-        // cho ta hoi luc minh create song thi lam sao cho no quay lai trang list luon trang index ay
-      // kiem tra cai id con ton tai hay khong
-            $website_delete= website::findOrFail($id);
-        // xoa// no ko lay het kia//findorfail moi lay het chu
-            $website_delete->delete();
-        // message - Thong diep
-            return back();
+    public function destroy($id, Request $request)
+    {
+        $ids = $request->input('idCheckbox');
+        if($ids != null)
+            Website::whereIn('id', $ids)->delete(); 
+        return back();
     }
 }

@@ -12,7 +12,7 @@
   </div>  
   <div class="form-group">
     {{ Form::label('title','title ')}}
-    {{ Form::text('title',$edit->title,['class'=>'form-control']) }}
+    {{ Form::text('title',$edit->title,['class'=>'form-control'])}}
   </div>
   <div class="form-group">
     {{form::label('link','link')}}
@@ -29,11 +29,11 @@
   <div class="form-group" >
     {{form::label('Active','Active:')}}
     <div class="form-check form-check-inline">
-      {{ Form::radio('active',1, null, ['class' =>'form-check-input', 'id' => 'yes']) }}
+      {!! Form::radio('active',1, null, ['class' =>'form-check-input', 'id' => 'yes']) !!}
       {{Form::label('yes','Yes',['class'=>'form-check-label'])}}
      </div>
     <div class="form-check form-check-inline">
-      {{Form::radio('active',0, null, ['class' =>'form-check-input', 'id' => 'no'])}}
+      {!!Form::radio('active',0, null, ['class' =>'form-check-input', 'id' => 'no'])!!}
       {{Form::label('no','No',['class'=>'form-check-label'])}}  
     </div>
   </div>

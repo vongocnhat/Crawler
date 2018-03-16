@@ -10,20 +10,22 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // $keyWords = KeyWord::where('active', 1)->get();
-        // $keyWordQuerys = [];
-        // foreach ($keyWords as $key => $item) {
-        //     $keyWordQuerys[$key] = ['title', 'like', '%'.$item->name.'%'];
-        // }
-        // $contents = Content::query();
-        // $contents = $contents->where('active', 1);
-        // $contents = $contents->where([$keyWordQuerys[0]]);
-        // for ($i = 1 ; $i < count($keyWordQuerys) ; $i++) {
-        //     $contents = $contents->orwhere([$keyWordQuerys[$i]]);
-        // }
+        $refreshTime = 15;
+        $refreshTime *= 1000;
+        return view('home', compact('refreshTime'));
+    }
+
+    public function newsAjax()
+    {
         $contents = Content::where('active', 1)->orderBy('pubDate', 'DESC')->get();
-        // $contents = Content::all();
-        return view('home', compact('contents'));
+        $toDayNewsCount = 0;
+        foreach ($contents as $item) {
+            $pubDate = date("Y-m-d", strtotime($item->pubDate));
+            $toDate = date("Y-m-d");
+            if($pubDate == $toDate)
+                $toDayNewsCount++;
+        }
+        return view('newsAjax', compact('contents', 'toDayNewsCount'));
     }
 
     public function getNews(Request $request) {

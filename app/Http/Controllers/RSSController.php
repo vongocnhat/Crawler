@@ -194,9 +194,10 @@ class RSSController extends Controller
                             $request = $client->request('GET', $link);
                             $content = new Content();
                             $content->domainName = $domainName;
-                            $content->title = $title;
-                            $content->link = $link;
-                            $content->description = $description;
+                            $content->title = html_entity_decode($title);
+                            $content->link = html_entity_decode($link);
+                            // html_entity_decode to show "" '' / () or {!!!!}
+                            $content->description = html_entity_decode($description);
                             //convert datetime
                             $pubDate = date("Y-m-d H:i:s", strtotime($pubDate));
                             // */convert datetime

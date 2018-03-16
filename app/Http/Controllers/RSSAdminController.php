@@ -85,10 +85,11 @@ class RSSAdminController extends Controller
      * @return \Illuminate\Http\Response
      */
 }
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $rss = rss::findorfail($id);
-        $rss->delete();
+        $ids = $request->input('idCheckbox');
+        if($ids != null)
+            RSS::whereIn('id', $ids)->delete(); 
         return back();
     }
 }

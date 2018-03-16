@@ -97,9 +97,11 @@ class DetailWebsiteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        DetailWebsite::findOrFail($id)->delete();
+        $ids = $request->input('idCheckbox');
+        if($ids != null)
+            DetailWebsite::whereIn('id', $ids)->delete(); 
         return back();
     }
 }

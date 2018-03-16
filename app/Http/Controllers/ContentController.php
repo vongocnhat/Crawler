@@ -90,10 +90,11 @@ class ContentController extends Controller
      * @return \Illuminate\Http\Response
      */
 }
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $con = content::findorfail($id);
-        $con->delete();
+        $ids = $request->input('idCheckbox');
+        if($ids != null)
+            Content::whereIn('id', $ids)->delete(); 
         return back();
     }
 }
