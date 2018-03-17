@@ -110,7 +110,11 @@ class RSSController extends Controller
             'concurrency' => $this->LoadLimit,
             'fulfilled' => function ($response, $index) {
                 // this is delivered each successful response
-                $tempDocument = new Crawler((string)$response->getBody());
+                $str = str_replace('><![CDATA[', '>', $response->getBody());
+                $str = str_replace(']]></', '</', $str);
+                $str = str_replace('<link>', '<linkHref>', $str);
+                $str = str_replace('</link>', '</linkHref>', $str);
+                $tempDocument = new Crawler($str);
                 if($tempDocument->count() > 0)
                 {
                     $this->summaryBody .= $tempDocument->html();
@@ -149,9 +153,11 @@ class RSSController extends Controller
             $pubDate = '';
             $item = $items->eq($i);
             $title = $item->filter('title');
-            $link = $item->filter('link');
+            $link = $item->filter('linkHref');
             if($title->count() > 0)
+            {
                 $title = $title->html();
+            }
             if($link->count() > 0)
             {
                 $link = $link->html();
@@ -177,6 +183,8 @@ class RSSController extends Controller
             if($available == false)
             {
                 foreach ($keyWords as $keyWord) {
+                    // $str = $this->matchChar($title, $keyWord->name) ? 'true' : 'false';
+                    // echo $title.'|||||||'.$keyWord->name.'||||||'.$str.'<br>';
                     if($this->matchChar($title, $keyWord->name))
                     {
                         $inserted = false;

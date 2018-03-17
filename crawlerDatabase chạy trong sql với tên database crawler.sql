@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2018 at 04:39 PM
+-- Generation Time: Mar 17, 2018 at 12:20 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -83,10 +83,11 @@ INSERT INTO `key_words` (`id`, `name`, `active`) VALUES
 (6, 'bộ đội', 0),
 (7, 'sĩ quan', 0),
 (8, 'tàu sân bay', 0),
-(9, 'vợ', 1),
+(9, 'vợ', 0),
 (10, 'bóng đá', 1),
 (11, 'trẻ', 1),
-(14, 'Gạc Ma', 1);
+(14, 'Gạc Ma', 0),
+(15, 'cha', 1);
 
 -- --------------------------------------------------------
 
@@ -110,7 +111,8 @@ CREATE TABLE `r_s_s_e_s` (
 
 INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `ignoreRSS`, `active`) VALUES
 (1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 'http://www.24h.com.vn/upload/rss/euro2016.rss', 1),
-(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', NULL, 1);
+(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', NULL, 0),
+(3, 'http://dantri.com.vn/rss.htm', '#listrss > ul > li a', '#divNewsContent', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -208,7 +210,7 @@ ALTER TABLE `websites`
 -- AUTO_INCREMENT for table `contents`
 --
 ALTER TABLE `contents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `detail_websites`
@@ -220,13 +222,13 @@ ALTER TABLE `detail_websites`
 -- AUTO_INCREMENT for table `key_words`
 --
 ALTER TABLE `key_words`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `r_s_s_e_s`
 --
 ALTER TABLE `r_s_s_e_s`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `video_tags`
