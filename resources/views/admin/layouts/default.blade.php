@@ -36,46 +36,52 @@
             <span class="nav-link-text">Home</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="DetailWebsite">
-          <a class="nav-link" href="{{ route('detailwebsite.index') }}">
-           <i class="fas fa-file-alt"></i>
-            <span class="nav-link-text">DetailWebsite</span>
-          </a>
-        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="KeyWord">
           <a class="nav-link" href="{{ route('keyword.index') }}">
-             <i class="fas fa-trademark"></i>
+             <i class="fas fa-table"></i>
             <span class="nav-link-text">KeyWord</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Website">
           <a class="nav-link" href="{{ route('website.index') }}">
-        <i class="fas fa-globe"></i>
+            <i class="fas fa-table"></i>
             <span class="nav-link-text">Website</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="DetailWebsite">
+          <a class="nav-link" href="{{ route('detailwebsite.index') }}">
+           <i class="fas fa-table"></i>
+            <span class="nav-link-text">DetailWebsite</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="RSS">
           <a class="nav-link" href="{{ route('rss.index') }}">
-        <i class="fas fa-globe"></i>
+          <i class="fas fa-table"></i>
             <span class="nav-link-text">RSS</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
           <a class="nav-link" href="{{ route('content.index') }}">
-        <i class="fas fa-globe"></i>
+           <i class="fas fa-table"></i>
             <span class="nav-link-text">Content</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
           <a class="nav-link" href="{{ route('videotag.edit', ['id' => 0]) }}">
-        <i class="fas fa-globe"></i>
+            <i class="fas fa-table"></i>
             <span class="nav-link-text">Video Tag</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
           <a class="nav-link" href="{{ route('getRSS') }}" target="_blank">
-        <i class="fas fa-globe"></i>
+          <i class="fas fa-table"></i>
             <span class="nav-link-text">Trang Lấy Tin</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
+          <a class="nav-link" href="{{ route('getCrawler') }}" target="_blank">
+          <i class="fas fa-table"></i>
+            <span class="nav-link-text">Trang Trộm Tin</span>
           </a>
         </li>
       </ul>
@@ -218,12 +224,13 @@
   <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
   <script defer src="styles/nhat.js"></script>
   <script type="text/javascript">
+    //active menu
     function activeMenu() {
       var currentUrl = window.location.href;
       var urlMenu;
       $('.nhat-menus .nav-link').each(function() {
         urlMenu = $(this).attr('href');
-        if(currentUrl == urlMenu)
+        if(currentUrl == urlMenu || currentUrl == urlMenu + '/create')
         {
           $(this).parent().addClass('active');
           return false;

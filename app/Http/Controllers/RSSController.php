@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 use DOMDocument;
+use Exception;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Pool;
@@ -13,7 +14,7 @@ use App\Content;
 use App\RSS;
 use App\VideoTag;
 use App\KeyWord;
-ini_set('max_execution_time', 3600);
+ini_set('max_execution_time', 86400);
 class RSSController extends Controller
 {
     private $LoadLimit = 1;
@@ -23,6 +24,7 @@ class RSSController extends Controller
     public function index()
     {
         echo '<a style="background-color: #28a745; color:#fff; padding: 15px;" href="'.route("home").'">Home</a><br><br>';
+        $keyWords = KeyWord::where('active', 1)->get();
         $RSSs = RSS::where('active', 1)->get();
         $links = [];
         $VideoTagDB = VideoTag::first();
@@ -44,7 +46,7 @@ class RSSController extends Controller
             $client = new GuzzleClient();
             $pool = new Pool($client, $requests(), [
                 'concurrency' => $this->LoadLimit,
-                'fulfilled' => function ($response, $index) use ($links, $RSS) {
+                'fulfilled' => function ($response, $index) use ($links, $RSS, $keyWords) {
                     // this is delivered each successful response
                     $document = new Crawler((string)$response->getBody());
                     $nodes = $document->filter($RSS->menuTag);
@@ -68,11 +70,11 @@ class RSSController extends Controller
                     $this->setSummaryBody($links);
                     unset($links);
                     $links = [];
-                    $this->getNewsRSS($RSS);
+                    $this->getNewsRSS($RSS, $keyWords);
                 },
                 'rejected' => function ($reason, $index) use ($RSS) {
                     // this is delivered each failed request
-                    echo '<span style="color:red">Không Thể Kết Nối Đến: '.$RSS->domainName.' Hoặc Sai Đường Dẫn RSS</span><br>';
+                    echo '<span style="color:red">Không Thể Kết Nối Đến: '.$RSS->domainName.' Có Thể Do Sai Đường Dẫn</span><br>';
                     $this->hasError = true;
                 },
             ]);
@@ -81,17 +83,17 @@ class RSSController extends Controller
             // Force the pool of requests to complete.
             $promise->wait();
         }
-        //60s tải 1 lần
+        //60s táº£i 1 láº§n
         $refreshTime = 15000;
         if($this->hasError)
         {
-            //5s tải 1 lần
+            //5s táº£i 1 láº§n
             $refreshTime = 5000;
-            echo '<span style="color: red">Không Thể Tải 1 Số Tin Tải Lại Sau: '.($refreshTime/1000).' giây</span>';
+            echo '<span style="color: red">Không Thể Tải 1 Số Tin Tức Tải Lại Sau: '.($refreshTime/1000).' Giây</span>';
         }
         else
         {
-            echo '<span style="color: green">Đã Tải Thành Công Các Trang Tải Lại Sau: '.($refreshTime/1000).' giây</span>';
+            echo '<span style="color: green">Tải Tin Thành Công Tải Lại Sau: '.($refreshTime/1000).' Giây</span>';
         }
         return view('admin.rss', compact('refreshTime'));
     }
@@ -131,7 +133,7 @@ class RSSController extends Controller
         $promise->wait();
     }
 
-    private function getNewsRSS($RSS) {
+    private function getNewsRSS($RSS, $keyWords) {
         // table contents
         $domainName = $RSS->domainName;
         $listTitleInserted = [];
@@ -145,7 +147,6 @@ class RSSController extends Controller
         // get table contents
         $contents = Content::all();
         // get table contents
-        $keyWords = KeyWord::all();
         for ($i=0; $i < $items->count(); $i++) { 
             $title = '';
             $link = '';
@@ -173,7 +174,7 @@ class RSSController extends Controller
             // add rss to database
             $available = false;
             foreach ($contents as $key => $item) {
-                if($link == $item->link)
+                if($title == $item->title)
                 {
                     // echo 'true'.$title.'|||||||||'.$item->title.$i.'</br>';
                     $available = true;
@@ -182,61 +183,65 @@ class RSSController extends Controller
             }
             if($available == false)
             {
+                $matchChar = false;
                 foreach ($keyWords as $keyWord) {
-                    // $str = $this->matchChar($title, $keyWord->name) ? 'true' : 'false';
-                    // echo $title.'|||||||'.$keyWord->name.'||||||'.$str.'<br>';
                     if($this->matchChar($title, $keyWord->name))
+                    // if(1 == 1)
                     {
-                        $inserted = false;
-                        foreach ($listTitleInserted as $key => $titleInserted) {
-                            if($titleInserted == $title)
-                            {
-                                $inserted = true;
-                                // break listLinkInserted
-                                break;
-                            }
-                        }
-                        if($inserted == false)
-                        {
-                            $client = new GuzzleClient();
-                            $request = $client->request('GET', $link);
-                            $content = new Content();
-                            $content->domainName = $domainName;
-                            $content->title = html_entity_decode($title);
-                            $content->link = html_entity_decode($link);
-                            // html_entity_decode to show "" '' / () or {!!!!}
-                            $content->description = html_entity_decode($description);
-                            //convert datetime
-                            $pubDate = date("Y-m-d H:i:s", strtotime($pubDate));
-                            // */convert datetime
-                            $content->pubDate = $pubDate;
-                            $document = new Crawler((string)$request->getBody());
-                            $body = $document->filter($RSS->bodyTag);
-                            if($RSS->exceptTag != '')
-                                $body->filter($RSS->exceptTag)->each(function (Crawler $crawler) {
-                                    foreach ($crawler as $node) {
-                                        $node->parentNode->removeChild($node);
-                                    }
-                                });
-                            $content->body = '';
-                            // có video là dùng iframe
-                            if($body->count() > 0)
-                            {
-                                if($this->videoTag != '')
-                                    if($body->filter($this->videoTag)->count() == 0)
-                                        try {
-                                            $content->body = $body->outerHtml();
-                                        } catch (Exception $e) {
-                                            $content->body = '';
-                                        }
-                            }
-                            // */add rss to database
-                            $content->save();
-                            array_push($listTitleInserted, $title);
-                        }
                         //break keyWords;
+                        $matchChar = true;
                         break;
                     }
+                }
+                $inserted = false;
+                foreach ($listTitleInserted as $key => $titleInserted) {
+                    if($titleInserted == $title)
+                    {
+                        $inserted = true;
+                        // break listLinkInserted
+                        break;
+                    }
+                }
+                $pubDate = str_replace("/", '-', $pubDate); 
+                $pubDay = date("Y-m-d", strtotime($pubDate));
+                $now = date('Y-m-d');
+                if($matchChar == true && $inserted == false && ($pubDay == $now || $pubDay == '1970-01-01'))
+                {
+                    $client = new GuzzleClient();
+                    $request = $client->request('GET', $link, ['http_errors' => false]);
+                    $content = new Content();
+                    $content->domainName = $domainName;
+                    $content->title = html_entity_decode($title);
+                    $content->link = html_entity_decode($link);
+                    // html_entity_decode to show "" '' / () or {!!!!}
+                    $content->description = html_entity_decode($description);
+                    //convert datetime
+                    $pubDate = date("Y-m-d H:i:s", strtotime($pubDate));
+                    // */convert datetime
+                    $content->pubDate = $pubDate;
+                    $document = new Crawler((string)$request->getBody());
+                    $body = $document->filter($RSS->bodyTag);
+                    if($RSS->exceptTag != '')
+                        $body->filter($RSS->exceptTag)->each(function (Crawler $crawler) {
+                            foreach ($crawler as $node) {
+                                $node->parentNode->removeChild($node);
+                            }
+                        });
+                    $content->body = '';
+                    // cÃ³ video lÃ  dÃ¹ng iframe
+                    if($body->count() > 0)
+                    {
+                        if($this->videoTag != '')
+                            if($body->filter($this->videoTag)->count() == 0)
+                                try {
+                                    $content->body = $body->outerHtml();
+                                } catch (Exception $e) {
+                                    $content->body = '';
+                                }
+                    }
+                    // */add rss to database
+                    $content->save();
+                    array_push($listTitleInserted, $title);
                 }
             }      
         }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\rss;
+use App\Content;
+
 class RSSAdminController extends Controller
 {
     /**
@@ -89,7 +91,11 @@ class RSSAdminController extends Controller
     {
         $ids = $request->input('idCheckbox');
         if($ids != null)
-            RSS::whereIn('id', $ids)->delete(); 
+        {
+            $domainNames = RSS::select('domainName')->whereIn('id', $ids)->get();
+            Content::whereIn('domainName', $domainNames)->delete(); 
+            RSS::whereIn('id', $ids)->delete();
+        }
         return back();
     }
 }

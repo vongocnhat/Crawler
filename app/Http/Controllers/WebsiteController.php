@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\website;
+use App\Content;
 
 class WebsiteController extends Controller
 {
@@ -106,7 +107,11 @@ class WebsiteController extends Controller
     {
         $ids = $request->input('idCheckbox');
         if($ids != null)
-            Website::whereIn('id', $ids)->delete(); 
+        {
+            $domainNames = Website::select('domainName')->whereIn('id', $ids)->get();
+            Content::whereIn('domainName', $domainNames)->delete(); 
+            Website::whereIn('id', $ids)->delete();
+        }
         return back();
     }
 }

@@ -15,9 +15,12 @@ Route::get('newsAjax', 'HomeController@newsAjax')->name('newsAjax');
 // ajax
 Route::get('news', 'HomeController@getNews')->name('getNews');
 Route::get('changeLink/{id}', 'HomeController@changeLink')->name('changeLink');
-Route::get('rss', 'RSSController@index')->name('getRSS');
 
-Route::get('crawler', 'CrawlerController@index');
+Route::prefix('getnews')->group(function () {
+	Route::get('rss', 'RSSController@index')->name('getRSS');
+	Route::get('crawler', 'CrawlerController@index')->name('getCrawler');
+});
+
 
 Route::prefix('admin')->group(function () {
     Route::resource('website', 'WebsiteController');
@@ -26,4 +29,5 @@ Route::prefix('admin')->group(function () {
 	Route::resource('content','ContentController');
 	Route::resource('rss','RSSAdminController');
 	Route::resource('videotag','VideoTagController');
+
 });

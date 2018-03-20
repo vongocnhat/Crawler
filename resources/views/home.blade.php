@@ -10,6 +10,8 @@
 <body>
 <a class="btn btn-success" style="margin: 15px 0 15px 15px;" href="{{ route('home') }}">Home</a>
 <a class="btn btn-success" style="margin: 15px;" href="{{ route('website.index') }}">Trang Quản Lý Admin</a>
+<br>
+<img src="images/loading.gif" class="loading-gif" width="100px">
 <div class="newsAjax">
 
 </div>
@@ -25,6 +27,32 @@
 </div>
 <div id="script"></div>
 <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+$.ajax({
+  url: '{{ route('newsAjax') }}',
+  success: function(result) {
+    $(".newsAjax").html(result);
+  },
+  complete: function(){
+    $('.loading-gif').hide();
+  }
+});
+{{-- // var refreshTime = {{ $refreshTime }}; --}}
+// if(refreshTime <= 0)
+//   refreshTime = 15000;
+// function myLoop () {           //  create a loop function
+//    setTimeout(function () { 
+//     $.ajax({
+{{-- //       url: '{{ route('newsAjax') }}', --}}
+//       success: function(result) {
+//         $(".newsAjax").html(result);
+//       }
+//     });
+//     myLoop();
+//   }, refreshTime);
+// }
+// myLoop();
+</script>
 <script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="vendor/datatables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="vendor/datatables/dataTables.bootstrap4.js"></script>
@@ -36,6 +64,10 @@ $( document ).ready(function() {
   $(".box-news").click(function(e) {
     e.stopPropagation();
   });
+  $(".newsAjax").on('click', '.box-news-content', function(e) {
+    alert('ok');
+  e.preventDefault();
+});
   // button title click, // button image click ajax nen lam nhu vay
   $(".newsAjax").on('click', '.btn-title, .btn-image > a', function(e) {
     e.preventDefault();
@@ -70,28 +102,6 @@ $( document ).ready(function() {
   //load news
 });
 
-</script>
-<script type="text/javascript">
-$.ajax({
-  url: '{{ route('newsAjax') }}',
-  success: function(result) {
-    $(".newsAjax").html(result);
-}});
-var refreshTime = {{ $refreshTime }};
-if(refreshTime <= 0)
-  refreshTime = 15000;
-function myLoop () {           //  create a loop function
-   setTimeout(function () { 
-    $.ajax({
-      url: '{{ route('newsAjax') }}',
-      success: function(result) {
-        $(".newsAjax").html(result);
-      }
-    });
-    myLoop();
-  }, refreshTime);
-}
-myLoop();
 </script>
 </body>
 </html>

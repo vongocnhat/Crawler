@@ -51,7 +51,6 @@ class HomeController extends Controller
             
            
             if($value->body == '')
-                // echo html_entity_decode('<iframe name="iframe1" id="iframe1" src="'.route('changeLink', ['id' => $value->id]).'" height="800px" width="100%" style="overflow: hidden;" frameborder="0" allowfullscreen >');
                 echo html_entity_decode('<iframe name="iframe1" id="iframe1" src="'.$value->link.'" height="800px" width="100%" style="overflow: hidden;" frameborder="0" allowfullscreen >');
             else
             {
@@ -60,21 +59,12 @@ class HomeController extends Controller
                 echo html_entity_decode('<h5 class="description">'.$value->description.'</h5></br>');
                 echo html_entity_decode($value->body);
             }
-            // echo    '
-            // <script>
-            //     var cssLink = document.createElement("link");
-            //     cssLink.href = "http://localhost/Crawler/public/styles/nhat.css"; 
-            //     cssLink.rel = "stylesheet"; 
-            //     cssLink.type = "text/css"; 
-            //     frames["iframe1"].document.body.appendChild(cssLink);
-            // </script>';
     	}
     }
 
     public function changeLink($id) {
         $content = Content::findOrFail($id);
         $html = file_get_contents($content->link);
-        // $html = str_replace('</head>','<link rel="stylesheet" href="http://localhost/Crawler/public/styles/nhat.css" /></head>', $html);
         echo $html;
     }
 

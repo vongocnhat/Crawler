@@ -13,11 +13,11 @@ use App\DetailWebsite;
 use App\KeyWord;
 use App\Content;
 use App\VideoTag;
-ini_set('max_execution_time', 3600);
+ini_set('max_execution_time', 86400);
 
 class CrawlerController extends Controller
 {
-    private $LoadLimit = 5;
+    private $LoadLimit = 1;
     // Websites from database
     private $domainName = 'http://www.24h.com.vn';
     private $menuTag = '#zone_footer > ul > li';
@@ -43,17 +43,22 @@ class CrawlerController extends Controller
     private $summaryBody = '';
     private $listNews = [];
     private $videoTag = '';
+    private $hasError = false;
     public function index()
     {
-
+        echo '<a style="background-color: #28a745; color:#fff; padding: 15px;" href="'.route("home").'">Home</a><br><br>';
         $time1 = date('H:i:s', time());
         echo 'Start: '.$time1.'</br>';
         // lấy dữ liệu từ database
         $keyWords = KeyWord::Where('Active', 1)->get();
         $websites = Website::where('Active', 1)->get();
-        foreach (VideoTag::all() as $key => $item) {
-            $this->videoTag = $item->name;
+        $VideoTagDB = VideoTag::first();
+        if(is_null($VideoTagDB))
+        {
+            echo '<script>alert("VideoTag Không Được Để Trống");</script>';
+            return;        
         }
+        $this->videoTag = $VideoTagDB->name;
         foreach ($websites as $key => $website) {
             $this->domainName = $website->domainName;
             $this->menuTag = $website->menuTag;
@@ -63,52 +68,71 @@ class CrawlerController extends Controller
             $this->stringLastPage = $website->stringLastPage;
             // */ lấy dữ liệu từ database
             // lấy danh mục tin tức
+            $requests = function () {
+                yield new GuzzleRequest('GET', $this->domainName);
+            };
             $client = new GuzzleClient();
-            $crawler = $client->request('GET', $this->domainName);
-            $document = new Crawler((string)$crawler->getBody());
-            $nodes = $document->filter($this->menuTag);
-            // for ($i=0; $i < $nodes->count(); $i++) { 
-            for ($i=1; $i < 2; $i++) { 
-                if($nodes->eq($i)->count() > 0)
-                {
-                    $menuHref = $nodes->eq($i)->attr('href');
-                    if(!$this->startWithHtml($menuHref))
-                        $menuHref = $this->domainName.$menuHref;
-                    // lấy danh mục tin tức
-                    // echo $menuHref.'</br>';
-                    $this->GetNews($menuHref, $website, $keyWords);
-                    // */lấy danh mục tin tức
-                }
-                else
-                {
-                    echo '<script>alert("Sai menuTag Của Website: '.$this->domainName.'");</script>';
-                }
-            }
+            $pool = new Pool($client, $requests(), [
+                'concurrency' => $this->LoadLimit,
+                'fulfilled' => function ($response, $index) use($website, $keyWords) {
+                    $document = new Crawler((string)$response->getBody());
+                    $nodes = $document->filter($this->menuTag);
+                    for ($i=0; $i < $nodes->count(); $i++) { 
+                    // for ($i=2; $i < 3; $i++) { 
+                        if($nodes->eq($i)->count() > 0)
+                        {
+                            $menuHref = $nodes->eq($i)->attr('href');
+                            if(!$this->startWithHtml($menuHref))
+                                $menuHref = $this->domainName.$menuHref;
+                            // lấy danh mục tin tức
+                            echo $menuHref.'</br>';
+                            $this->GetNews($menuHref, $website, $keyWords);
+                            // */lấy danh mục tin tức
+                        }
+                        else
+                        {
+                            echo '<span style="color:red">Sai menuTag Của Website: '.$this->domainName.'</span>';
+                        }
+                    }
+                },
+                'rejected' => function ($reason, $index) {
+                    // this is delivered each failed request
+                    echo '<span style="color:red">Không Thể Kết Nối Đến: '.$this->domainName.' Có Thể Do Sai Đường Dẫn</span><br>';
+                    $this->hasError = true;
+                },
+            ]);
+            // Initiate the transfers and create a promise
+            $promise = $pool->promise();
+            // Force the pool of requests to complete.
+            $promise->wait();
+
+            
         }
         $time2 = date('H:i:s', time());
         echo 'End: '.$time2.'</br>';
         $timestamp1 = strtotime($time1);
         $timestamp2 = strtotime($time2);
-        echo 'Sum: '.($timestamp2 - $timestamp1);
+        echo 'Sum: '.($timestamp2 - $timestamp1).'<br>';
+        //60s tải 1 lần
+        $refreshTime = 15000;
+        if($this->hasError)
+        {
+            //5s tải 1 lần
+            $refreshTime = 5000;
+            echo '<span style="color: red">Không Thể Tải 1 Số Tin Tức Tải Lại Sau: '.($refreshTime/1000).' Giây</span>';
+        }
+        else
+        {
+            echo '<span style="color: green">Đã Tải Thành Công Tải Lại Sau: '.($refreshTime/1000).' Giây</span>';
+        }
+        return view('admin.rss', compact('refreshTime'));
     }
 
-    public function getNews($menuHref, $website, $keyWords) {
-        // biến để chứa node
-        $titleNode;
-        $hrefNode;
-        $summaryNode;
-        $updateTimeNode;
-        // */biến để chứ tag
-        // biến lấy để hiển thị ra view
-        $title;
-        $href;
-        $summary;
-        $updateTime;
-        $document = new Crawler($this->summaryBody);
-        $count = 0;
+    public function setSummaryBody($menuHref, $website) {
+                $count = 0;
         $client = new GuzzleClient();
         $this->summaryBody = '';
-        // lấy 1 cái để kiểm tra trước
+        // lấy 1 cái để kiểm tra có đúng đường dẫn không
         $document1 = $client->request('GET', $menuHref.$this->stringFirstPage.'1'.$this->stringLastPage, ['http_errors' => false]);
         $tempDocument = new Crawler((string)$document1->getBody());
         foreach ($website->DetailWebsites()->where('active', 1)->get() as $key => $detailWebsite) {
@@ -123,6 +147,7 @@ class CrawlerController extends Controller
         }
         // */biến lấy để hiển thị ra view
         // // Initiate each request but do not block danh sách đường dẫn
+        // tiếp tục lấy những tin còn lại
         if($this->numberPage > 1)
         {
             $promises = [];
@@ -152,6 +177,24 @@ class CrawlerController extends Controller
         }
         if($this->summaryBody == '')
             return;
+    }
+
+    public function getNews($menuHref, $website, $keyWords) {
+        // biến để chứa node
+        $titleNode;
+        $hrefNode;
+        $summaryNode;
+        $updateTimeNode;
+        // */biến để chứ tag
+        // biến lấy để hiển thị ra view
+        $title;
+        $href;
+        $summary;
+        $updateTime;
+        $listTitleInserted = [];
+        $contents = Content::all();
+        // $document = new Crawler($this->summaryBody);
+        $this->setSummaryBody($menuHref, $website);
         $document = new Crawler($this->summaryBody);
         foreach ($website->DetailWebsites()->where('active', 1)->get() as $key => $detailWebsite) {
             $items = $document->filter($detailWebsite->containerTag);
@@ -178,46 +221,88 @@ class CrawlerController extends Controller
                         if($title == '')
                             $title = $titleNode->eq(0)->text();
                         $href = $titleNode->eq(0)->attr('href');
-                        if(!$this->startWithHtml($href))
-                            $href = $this->domainName.$titleNode->eq(0)->attr('href');
-                        $content = new Content();
-                        $content->domainName = $this->domainName;
-                        $content->title = $title;
-                        $content->link = $href;
-                        if($detailWebsite->summaryTag != '')
-                        {
-                            $summaryNode = $item->filter($detailWebsite->summaryTag);
-                            if($summaryNode->count() > 0)
+                        $available = false;
+                        foreach ($contents as $key => $content) {
+                            if($title == $content->title)
                             {
-                                $summary = $summaryNode->text();
-                                $content->description = $summary;
+                                // echo 'true'.$title.'|||||||||'.$item->title.$i.'</br>';
+                                $available = true;
+                                break;
                             }
                         }
-                        if($detailWebsite->updateTimeTag != '')
+                        if($available == false)
                         {
-                            $updateTimeNode = $item->filter($detailWebsite->updateTimeTag);
-                            if($updateTimeNode->count() > 0)
+                            if(!$this->startWithHtml($href))
+                                $href = $this->domainName.$titleNode->eq(0)->attr('href');
+                            $matchChar = false;
+                            foreach ($keyWords as $keyWord) {
+                                if($this->matchChar($title, $keyWord->name))
+                                // if(1 == 1)
+                                {
+                                    $matchChar = true;
+                                    break;
+                                }
+                            }
+                            $inserted = false;
+                            foreach ($listTitleInserted as $key => $titleInserted) {
+                                if($titleInserted == $title)
+                                {
+                                    $inserted = true;
+                                    // break listLinkInserted
+                                    break;
+                                }
+                            }
+                            $checkPubDate = false;
+                            if($detailWebsite->updateTimeTag != '')
                             {
-                                $updateTime = $updateTimeNode->text();
-                                //convert datetime
-                                $updateTime = date("Y-m-d H:i:s", strtotime($updateTime));
-                                // */convert datetime
+                                $updateTimeNode = $item->filter($detailWebsite->updateTimeTag);
+                                if($updateTimeNode->count() > 0)
+                                {
+                                    $updateTime = $updateTimeNode->text();
+                                    $updateTime = str_replace('/', '-', $updateTime);
+                                    //convert datetime
+                                    $updateTime = date("Y-m-d H:i:s", strtotime($updateTime));
+                                    $pubDay = date("Y-m-d", strtotime($updateTime));
+                                    $now = date('Y-m-d');
+                                    //không xác định được ngày đăng tin
+                                    if($pubDay == $now || $pubDay == '1970-01-01')
+                                        $checkPubDate = true;
+                                }
+                            }else {
+                                $checkPubDate = true;
+                            }
+                            if($matchChar == true && $inserted == false && $checkPubDate == true)
+                            {
+                                $content = new Content();
+                                $content->domainName = $this->domainName;
+                                $content->title = $title;
+                                $content->link = $href;
+                                if($detailWebsite->summaryTag != '')
+                                {
+                                    $summaryNode = $item->filter($detailWebsite->summaryTag);
+                                    if($summaryNode->count() > 0)
+                                    {
+                                        $summary = $summaryNode->text();
+                                        $content->description = $summary;
+                                    }
+                                }
                                 $content->pubDate = $updateTime;
+                                $client = new GuzzleClient();
+                                $request = $client->request('GET', $href, ['http_errors' => false]);
+                                $document = new Crawler((string)$request->getBody());
+                                $body = $document->filter($detailWebsite->Websites->bodyTag);
+                                $content->body = '';
+                                // có video là dùng iframe
+                                if($body->count() > 0)
+                                {
+                                    if($this->videoTag != '')
+                                        if($body->filter($this->videoTag)->count() == 0)
+                                            $content->body = $body->outerHtml();
+                                }
+                                $content->save();
+                                array_push($listTitleInserted, $title);
                             }
                         }
-                        $client = new GuzzleClient();
-                        $request = $client->request('GET', $href);
-                        $document = new Crawler((string)$request->getBody());
-                        $body = $document->filter($detailWebsite->Websites->bodyTag);
-                        $content->body = '';
-                        // có video là dùng iframe
-                        if($body->count() > 0)
-                        {
-                            if($this->videoTag != '')
-                                if($body->filter($this->videoTag)->count() == 0)
-                                    $content->body = $body->outerHtml();
-                        }
-                        $content->save();
                     }
                 }
             }
@@ -241,28 +326,35 @@ class CrawlerController extends Controller
         return substr( $href, 0, 4 ) == "http" ? true : false;
     }
     // tìm chính xác từ
-    function matchChar($string, $keyWord) {
-        $string = '*'.$string.'*';
+    private function matchChar($string, $keyWord) {
+        $string = ' '.$string.' ';
+        $string = $this->removeSymbol($string);
+        $keyWord = $this->removeSymbol($keyWord);
         $index = stripos($string, $keyWord);
-        // echo 'index: '.$index.'</br>';
-        // echo 'type: '.gettype($index).'</br>';
         if($index == true && gettype($index) == 'integer')
         {
             $indexBefore = $index-1;
             $indexAfter = $index+strlen($keyWord);
             $charBefore = substr($string, $indexBefore, 1);
             $charAfter = substr($string, $indexAfter, 1);
-            // echo 'string: '.$string.'</br>';
-            // echo 'keyWord: '.$keyWord.'</br>';
-            // echo 'before:'.$indexBefore.'| after:'.$indexAfter.'</br>';
-            // echo 'before:'.$charBefore.'| after:'.$charAfter.'</br>';
+            // '*How area you?*' contain 'how are' = false
+            // '*How are" you?*' contain 'how are' = true
             if(!(ctype_alpha($charBefore) || ctype_alpha($charAfter)))
-            {
-                // echo 'true'.'</br></br>';
                 return true;
-            }
         }
-        // echo 'false'.'</br></br>';
         return false;
+    }
+    private function removeSymbol($string) {
+        $charStrings = str_split($string);
+        $string = '';
+        $asc = -1;
+        foreach ($charStrings as $value) {
+            $asc = ord($value);
+            if(!(($asc >= 33 && $asc <= 47) || ($asc >= 58 && $asc <= 64) || ($asc >= 91 && $asc <= 96) || ($asc >= 123 && $asc <= 126)))
+                $string .= $value;
+        }
+        // thay thế nhiều dấu space thành 1 dấu
+        $string = preg_replace('!\s+!', ' ', $string);
+        return $string;
     }
 }
