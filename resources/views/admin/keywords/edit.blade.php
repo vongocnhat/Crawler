@@ -19,14 +19,14 @@
 {{ Form::label('name','Name')}}
 </div>
 <div class="form-group"> 
-{{ Form::text('name',$edit->name, ['class'=>'form-control']) }}
+{{ Form::text('name', null, ['class'=>'form-control', 'required' => 'required']) }}
 </div>  
   <div class="form-group" >
     {{form::label('Active','Active:')}}
     <div class="form-check form-check-inline">
       {!! Form::radio('active',1, null, ['class' =>'form-check-input', 'id' => 'yes']) !!}
       {{Form::label('yes','Yes',['class'=>'form-check-label'])}}
-     </div>
+    </div>
     <div class="form-check form-check-inline">
       {!!Form::radio('active',0, null, ['class' =>'form-check-input', 'id' => 'no'])!!}
       {{Form::label('no','No',['class'=>'form-check-label'])}}  

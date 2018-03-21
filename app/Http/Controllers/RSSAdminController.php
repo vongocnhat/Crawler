@@ -98,4 +98,11 @@ class RSSAdminController extends Controller
         }
         return back();
     }
+
+    public function active(Request $request) {
+        $id = $request->input('id');
+        $model = RSS::findorfail($id);
+        $model->active = !$model->active;
+        $model->save();
+    }
 }

@@ -8,15 +8,15 @@
   <hr>
   <div class="form-group">
     {{ Form::label('domainName','domainName') }}
-    {{ Form::select('domainName', $rsss, null, ['class' => 'form-control', 'placeholder' => 'Chọn DomainName']) }}
+    {{ Form::select('domainName', $rsss, null, ['class' => 'form-control', 'placeholder' => 'Chọn DomainName', 'required' => 'required']) }}
   </div>  
   <div class="form-group">
     {{ Form::label('title','title ')}}
-    {{ Form::text('title',$edit->title,['class'=>'form-control']) }}
+    {{ Form::text('title',$edit->title,['class'=>'form-control', 'required' => 'required']) }}
   </div>
   <div class="form-group">
     {{form::label('link','link')}}
-    {{form::text('link',$edit->link,['class'=>'form-control'])}}
+    {{form::text('link',$edit->link,['class'=>'form-control', 'required' => 'required'])}}
   </div>
   <div class="form-group">
     {{form::label('description','description:')}}
@@ -24,7 +24,7 @@
   </div>
   <div class="form-group">
     {{form::label('body','body:')}}
-    {{form::textarea('body',$edit->body,['class'=>'form-control', 'rows' => 10])}}
+    {{form::textarea('body',$edit->body,['class'=>'form-control', 'rows' => 10, 'required' => 'required'])}}
   </div>
   <div class="form-group" >
     {{form::label('Active','Active:')}}

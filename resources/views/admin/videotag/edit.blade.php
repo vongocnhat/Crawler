@@ -10,7 +10,7 @@
 {!! Form::model($videoTag, ['route' => ['videotag.update', 'id' => $videoTag->id], 'method' => 'put', 'class' => 'col-12']) !!}
   <div class="form-group">
     {{ Form::label(null, 'Name: ') }}
-    {{ Form::text('name', null, ['class' => 'form-control']) }}
+    {{ Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) }}
   </div>
   <div class="form-group"> 
     {{ Form::submit('Submit', ['class' => 'btn btn-success']) }}

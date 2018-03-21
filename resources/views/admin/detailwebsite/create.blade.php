@@ -1,6 +1,6 @@
 @extends('admin.layouts.default')
 @section('content')
-<h3>Bảng DetailWebsites</h3>
+<h3>Create DetailWebsite<s/h3>
 {{-- nhận thông điệp từ controller --}}
 <div>
   @if(Session::has('thongbao'))
@@ -10,15 +10,15 @@
 {!! Form::open(['route' => 'detailwebsite.store', 'method' => 'post', 'class' => 'col-12']) !!}
   <div class="form-group">
     {{ Form::label(null, 'DomainName') }}
-    {{ Form::select('domainName', $domainNames, null, ['class' => 'form-control', 'placeholder' => 'Chọn DomainName']) }}
+    {{ Form::select('domainName', $domainNames, null, ['class' => 'form-control', 'placeholder' => 'Chọn DomainName', 'required' => 'required']) }}
   </div>
   <div class="form-group">
     {{ Form::label(null, 'ContainerTag: ') }}
-    {{ Form::text('containerTag', null, ['class' => 'form-control']) }}
+    {{ Form::text('containerTag', null, ['class' => 'form-control', 'required' => 'required']) }}
   </div>
   <div class="form-group">
     {{ Form::label(null, 'TitleTag') }}
-    {{ Form::text('titleTag', null, ['class' => 'form-control']) }}
+    {{ Form::text('titleTag', null, ['class' => 'form-control', 'required' => 'required']) }}
   </div>
   <div class="form-group">
     {{ Form::label(null, 'SummaryTag') }}

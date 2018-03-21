@@ -104,4 +104,11 @@ class DetailWebsiteController extends Controller
             DetailWebsite::whereIn('id', $ids)->delete(); 
         return back();
     }
+
+    public function active(Request $request) {
+        $id = $request->input('id');
+        $model = DetailWebsite::findorfail($id);
+        $model->active = !$model->active;
+        $model->save();
+    }
 }

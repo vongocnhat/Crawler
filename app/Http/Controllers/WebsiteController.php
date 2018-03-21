@@ -37,21 +37,24 @@ class WebsiteController extends Controller
      */
     public function store(Request $request)
     {
-          $website = $request->all();
+          // $website = $request->all();
         // 2.luu
-        website::create([
-            //'field' trong database =>'name tu view'
-            'domainName' => $website['domainName'],//lay du lieu tu view co ten la title do vao filled title trong model
-            'menuTag' =>$website['menuTag'],
-            'numberPage'=>$website['numberPage'],
-            'limitOfOnePage'=>$website['limitOfOnePage'],
-            'stringFirstPage'=>$website['stringFirstPage'],
-            'stringLastPage'=>$website['stringLastPage'],
-            'active'=>$website['active'],
-            'bodyTag'=>$website['bodyTag']
-        ]);
-     
-         return redirect()->route('website.index');
+        // website::create([
+        //     //'field' trong database =>'name tu view'
+        //     'domainName' => $website['domainName'],//lay du lieu tu view co ten la title do vao filled title trong model
+        //     'menuTag' =>$website['menuTag'],
+        //     'numberPage'=>$website['numberPage'],
+        //     'limitOfOnePage'=>$website['limitOfOnePage'],
+        //     'stringFirstPage'=>$website['stringFirstPage'],
+        //     'stringLastPage'=>$website['stringLastPage'],
+        //     'active'=>$website['active'],
+        //     'bodyTag'=>$website['bodyTag'],
+        //     'exceptTag'=>$website['exceptTag']
+        // ]);
+        $website = new Website();
+        $website->fill($request->all());
+        $website->save();
+        return redirect()->route('website.index');
 
     }
 
@@ -113,5 +116,12 @@ class WebsiteController extends Controller
             Website::whereIn('id', $ids)->delete();
         }
         return back();
+    }
+
+    public function active(Request $request) {
+        $id = $request->input('id');
+        $model = Website::findorfail($id);
+        $model->active = !$model->active;
+        $model->save();
     }
 }

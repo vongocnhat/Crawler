@@ -31,6 +31,7 @@
                   <th>Sting First Page</th>
                   <th>String Last Page</th>
                   <th>BodyTag</th>
+                  <th>Except Tag</th>
                   <th>Active</th>
                   <th>Edit</th>
                 </tr>
@@ -46,6 +47,7 @@
                   <th>Sting First Page</th>
                   <th>String Last Page</th>
                   <th>BodyTag</th>
+                  <th>Except Tag</th>
                   <th>Active</th>
                   <th>Edit</th>
           </td>
@@ -63,7 +65,10 @@
                   <td>{{ $data->stringFirstPage }}</td>
                   <td>{{ $data->stringLastPage }}</td>
                   <td>{{ $data->bodyTag }}</td>
-                  <td>{{ $data->active ? 'Yes' : 'No' }}</td>
+                  <td>{{ $data->exceptTag }}</td>
+                  <td>
+                    <label><input type="checkbox" class="tdCbActive" value="{{ $data->id }}" {{$data->active ? 'checked="checked' : '' }}"><span>{{ $data->active ? ' Yes' : ' No' }}</span></label>
+                  </td>
                   <td>
                     <a href="{{ route('website.edit', ['website' => $data->id]) }}" class="btn btn-info">Edit</a>
                   </td>
@@ -74,4 +79,15 @@
             {!! Form::close()!!}
           </div>
         </div>
+@stop
+@section('script')
+  <script type="text/javascript">
+    $('.tdCbActive').click(function() {
+      var id = $(this).val();
+      $.ajax({
+        url: '{{ route('website.active') }}',
+        data: {id: id}
+      });
+    });
+  </script>
 @stop

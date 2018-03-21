@@ -4,7 +4,7 @@
 @section('content')
     {{ Form::open(array('route'=>'rss.store','method'=>'post'))}}
     <div class="container-fluid">
-  <h1 >Create </h1><hr>
+  <h1 >Create RSS</h1><hr>
   <div class="row">
     @if(Session::has('ketqua')) 
         <p class="alert alert-success">{{Session::get('ketqua')}}</p>
@@ -13,15 +13,15 @@
  
   <div class="form-group">
     {{ Form::label('domainName','domainName')}}
-    {{ Form::text('domainName',null, ['class'=>'form-control']) }}
+    {{ Form::text('domainName',null, ['class'=>'form-control', 'required' => 'required']) }}
   </div>  
   <div class="form-group">
     {{ Form::label('menuTag','menuTag ')}}
-    {{ Form::text('menuTag',null,['class'=>'form-control'])}}
+    {{ Form::text('menuTag',null,['class'=>'form-control', 'required' => 'required'])}}
   </div>
   <div class="form-group">
     {{form::label('bodyTag','bodyTag')}}
-    {{form::text('bodyTag',null,['class'=>'form-control'])}}
+    {{form::text('bodyTag',null,['class'=>'form-control', 'required' => 'required'])}}
   </div>
   <div class="form-group">
     {{form::label('exceptTag','exceptTag:')}}

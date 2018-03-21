@@ -57,7 +57,9 @@
                     <td>{{$data->menuTag}}</td>
                     <td>{{$data->bodyTag}}</td>
                     <td>{{$data->exceptTag}}</td>
-                    <td>{{$data->active ? 'Yes' : 'No' }}</td>
+                    <td>
+                      <label><input type="checkbox" class="tdCbActive" value="{{ $data->id }}" {{$data->active ? 'checked="checked' : '' }}"><span>{{ $data->active ? ' Yes' : ' No' }}</span></label>
+                    </td>
                     <td><a href="{{ URL::route('rss.edit', ['rss' => $data->id]) }}" class="btn btn-success">Edit</a></td>
                   </tr>
             @endforeach
@@ -69,8 +71,14 @@
 </div>
 </div>
 @stop
-
-
-
-
-
+@section('script')
+  <script type="text/javascript">
+    $('.tdCbActive').click(function() {
+      var id = $(this).val();
+      $.ajax({
+        url: '{{ route('rss.active') }}',
+        data: {id: id}
+      });
+    });
+  </script>
+@stop

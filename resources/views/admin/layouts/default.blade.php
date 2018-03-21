@@ -66,19 +66,19 @@
             <span class="nav-link-text">Content</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Video Tag">
           <a class="nav-link" href="{{ route('videotag.edit', ['id' => 0]) }}">
             <i class="fas fa-table"></i>
             <span class="nav-link-text">Video Tag</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Trang Lấy Tin">
           <a class="nav-link" href="{{ route('getRSS') }}" target="_blank">
           <i class="fas fa-table"></i>
             <span class="nav-link-text">Trang Lấy Tin</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Content">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Trang Trộm Tin">
           <a class="nav-link" href="{{ route('getCrawler') }}" target="_blank">
           <i class="fas fa-table"></i>
             <span class="nav-link-text">Trang Trộm Tin</span>
@@ -247,13 +247,18 @@
       "columnDefs": [ {
       "targets"  : 0,
       "orderable": false,
-    }]
+    }],
+    "lengthMenu": [[10, 50, 100, 500, -1], [10, 50, 100, 500, "All"]]
     } );
   </script>
   <script type="text/javascript">
     //delete multi
     $('.thCbDelete').click(function() {
       $('.tdCbDelete').prop('checked', $(this).is(':checked'));
+    });
+    $('.tdCbActive').click(function() {
+      var text = $(this).is(':checked') ? ' Yes' : ' No';
+      $(this).siblings('span').text(text);
     });
   </script>
 </div>

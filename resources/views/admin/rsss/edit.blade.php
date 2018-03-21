@@ -1,6 +1,6 @@
 @extends('admin.layouts.default')
 @section('content')
-<h3>Bảng DetailWebsites</h3>
+<h3>Edit RSS</h3>
 {{-- nhận thông điệp từ controller --}}
 <div>
   @if(Session::has('thongbao'))
@@ -10,15 +10,15 @@
 {!! Form::model($rss, ['route' => ['rss.update', 'id' => $rss->id], 'method' => 'put', 'class' => 'col-12']) !!}
   <div class="form-group">
     {{ Form::label('domainName','domainName')}}
-    {{ Form::text('domainName',null, ['class'=>'form-control']) }}
+    {{ Form::text('domainName',null, ['class'=>'form-control', 'required' => 'required']) }}
   </div>  
   <div class="form-group">
     {{ Form::label('menuTag','menuTag ')}}
-    {{ Form::text('menuTag',null,['class'=>'form-control'])}}
+    {{ Form::text('menuTag',null,['class'=>'form-control', 'required' => 'required'])}}
   </div>
   <div class="form-group">
     {{form::label('bodyTag','bodyTag')}}
-    {{form::text('bodyTag',null,['class'=>'form-control'])}}
+    {{form::text('bodyTag',null,['class'=>'form-control', 'required' => 'required'])}}
   </div>
   <div class="form-group">
     {{form::label('exceptTag','exceptTag:')}}

@@ -7,32 +7,36 @@
 <hr>
 <div class="form-group">
 {{ Form::label('domainName','DomainName')}}
-{{ Form::text('domainName','', ['class'=>'form-control']) }}
+{{ Form::text('domainName','', ['class'=>'form-control', 'required' => 'required']) }}
 </div>  
 <div class="form-group">
 {{ Form::label('menuTag','MenuTag ')}} 
-{{ Form::text('menuTag','',['class'=>'form-control'])}}
+{{ Form::text('menuTag','',['class'=>'form-control', 'required' => 'required'])}}
 </div>
 <div class="form-group">
 {{form::label('numberPage','NumberPage')}}
-{{form::number('numberPage','',['class'=>'form-control'])}}
+{{form::number('numberPage','',['class'=>'form-control', 'required' => 'required'])}}
 </div>
 <div class="form-group">
 {{form::label('limitOfOnePage','LimitOfOnePage:')}}
-{{form::number('limitOfOnePage','',['class'=>'form-control'])}}
+{{form::number('limitOfOnePage','',['class'=>'form-control', 'required' => 'required'])}}
 </div>
 <div class="form-group">
 {{form::label('stringFirstPage','StringFirstPage:')}}
-{{form::text('stringFirstPage','',['class'=>'form-control'])}}
+{{form::text('stringFirstPage','',['class'=>'form-control', 'required' => 'required'])}}
 </div>
 <div class="form-group">
 {{form::label('stringLastPage','StringLastPage:')}}
 {{form::text('stringLastPage','',['class'=>'form-control'])}}
 </div>
-<div class="form-group">
+  <div class="form-group">
     {{form::label('bodyTag','BodyTag:')}}
-    {{form::text('bodyTag',null,['class'=>'form-control'])}}
-</div>
+    {{form::text('bodyTag',null,['class'=>'form-control', 'required' => 'required'])}}
+  </div>
+  <div class="form-group">
+    {{form::label('exceptTag','exceptTag:')}}
+    {{form::text('exceptTag',null,['class'=>'form-control'])}}
+  </div>
   <div class="form-group" >
     {{form::label('Active','Active:')}}
     <div class="form-check form-check-inline">

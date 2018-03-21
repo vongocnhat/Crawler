@@ -78,7 +78,6 @@ class CrawlerController extends Controller
                     $document = new Crawler((string)$response->getBody());
                     $nodes = $document->filter($this->menuTag);
                     for ($i=0; $i < $nodes->count(); $i++) { 
-                    // for ($i=2; $i < 3; $i++) { 
                         if($nodes->eq($i)->count() > 0)
                         {
                             $menuHref = $nodes->eq($i)->attr('href');
@@ -195,7 +194,8 @@ class CrawlerController extends Controller
         $contents = Content::all();
         // $document = new Crawler($this->summaryBody);
         $this->setSummaryBody($menuHref, $website);
-        $document = new Crawler($this->summaryBody);
+        $document = new Crawler($this->summaryBody); 
+        echo $website->DetailWebsites()->where('active', 1)->count() == 0 ? '<span style="color: red">'.$website->domainName.' Chưa Có DetailWebsite</span><br>' : '';
         foreach ($website->DetailWebsites()->where('active', 1)->get() as $key => $detailWebsite) {
             $items = $document->filter($detailWebsite->containerTag);
             for ($i=0; $i < $this->limitOfOnePage; $i++) { 
@@ -265,8 +265,16 @@ class CrawlerController extends Controller
                                     $pubDay = date("Y-m-d", strtotime($updateTime));
                                     $now = date('Y-m-d');
                                     //không xác định được ngày đăng tin
-                                    if($pubDay == $now || $pubDay == '1970-01-01')
+                                    if($pubDay == $now)
+                                    {
                                         $checkPubDate = true;
+                                    }
+                                    if($pubDay == '1970-01-01')
+                                    {
+                                        $checkPubDate = true;
+                                        $updateTime = null;
+                                    }
+
                                 }
                             }else {
                                 $checkPubDate = true;
@@ -286,13 +294,27 @@ class CrawlerController extends Controller
                                         $content->description = $summary;
                                     }
                                 }
+                                if($updateTime == '')
+                                    $updateTime = null;
                                 $content->pubDate = $updateTime;
                                 $client = new GuzzleClient();
                                 $request = $client->request('GET', $href, ['http_errors' => false]);
                                 $document = new Crawler((string)$request->getBody());
                                 $body = $document->filter($detailWebsite->Websites->bodyTag);
+                                if($website->exceptTag != '')
+                                    $body->filter($website->exceptTag)->each(function (Crawler $crawler) {
+                                    foreach ($crawler as $node) {
+                                        $node->parentNode->removeChild($node);
+                                    }
+                                });
+                                // $sumBody = '';
+                                // for ($j=0; $j < $body->count(); $j++) { 
+                                //     $sumBody .= $body->eq($j)->outerHtml();
+                                // }
+                                // $body = new Crawler($sumBody);
+                                
+                                // có video là dùng iframe khi đó  $content->body = ''
                                 $content->body = '';
-                                // có video là dùng iframe
                                 if($body->count() > 0)
                                 {
                                     if($this->videoTag != '')

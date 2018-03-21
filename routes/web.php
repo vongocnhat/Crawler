@@ -21,13 +21,21 @@ Route::prefix('getnews')->group(function () {
 	Route::get('crawler', 'CrawlerController@index')->name('getCrawler');
 });
 
-
 Route::prefix('admin')->group(function () {
+	Route::get('website/active', 'WebsiteController@active')->name('website.active');
     Route::resource('website', 'WebsiteController');
-	Route::resource('detailwebsite', 'DetailWebsiteController');
-	Route::resource('keyword','KeyWordController');
-	Route::resource('content','ContentController');
-	Route::resource('rss','RSSAdminController');
-	Route::resource('videotag','VideoTagController');
 
+    Route::get('detailwebsite/active', 'DetailWebsiteController@active')->name('detailwebsite.active');
+	Route::resource('detailwebsite', 'DetailWebsiteController');
+
+	Route::get('keyword/active', 'KeyWordController@active')->name('keyword.active');
+	Route::resource('keyword','KeyWordController');
+
+	Route::get('content/active', 'ContentController@active')->name('content.active');
+	Route::resource('content','ContentController');
+
+	Route::get('rss/active', 'RSSAdminController@active')->name('rss.active');
+	Route::resource('rss','RSSAdminController');
+
+	Route::resource('videotag','VideoTagController');
 });

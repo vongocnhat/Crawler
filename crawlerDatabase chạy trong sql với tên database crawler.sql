@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2018 at 12:20 PM
+-- Generation Time: Mar 21, 2018 at 01:19 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -48,10 +48,10 @@ CREATE TABLE `contents` (
 CREATE TABLE `detail_websites` (
   `id` int(11) NOT NULL,
   `domainName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `containerTag` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `titleTag` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `summaryTag` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `updateTimeTag` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `containerTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `titleTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `summaryTag` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `updateTimeTag` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -61,7 +61,8 @@ CREATE TABLE `detail_websites` (
 
 INSERT INTO `detail_websites` (`id`, `domainName`, `containerTag`, `titleTag`, `summaryTag`, `updateTimeTag`, `active`) VALUES
 (3, 'http://www.24h.com.vn', '.boxDoi-sub-Item-trangtrong', '.news-title a', '.news-sapo', '.update-time', 1),
-(4, 'https://vnexpress.net', '.sidebar_1 > .list_news', '.title_news > a', '.description', '', 1);
+(4, 'https://vnexpress.net', '.sidebar_1 > .list_news', '.title_news > a', '.description', '', 1),
+(5, 'http://www.24h.com.vn', '#home-sum-1', '.news-title16-G', '.news-sapo', '.update-time', 1);
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,7 @@ INSERT INTO `detail_websites` (`id`, `domainName`, `containerTag`, `titleTag`, `
 
 CREATE TABLE `key_words` (
   `id` int(11) NOT NULL,
-  `name` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -80,14 +81,15 @@ CREATE TABLE `key_words` (
 --
 
 INSERT INTO `key_words` (`id`, `name`, `active`) VALUES
-(6, 'bộ đội', 0),
-(7, 'sĩ quan', 0),
-(8, 'tàu sân bay', 0),
-(9, 'vợ', 0),
+(6, 'bộ đội', 1),
+(7, 'sĩ quan', 1),
+(8, 'tàu sân bay', 1),
+(9, 'vợ', 1),
 (10, 'bóng đá', 1),
 (11, 'trẻ', 1),
-(14, 'Gạc Ma', 0),
-(15, 'cha', 1);
+(14, 'vụ', 1),
+(15, 'mới', 1),
+(16, 'putin', 1);
 
 -- --------------------------------------------------------
 
@@ -98,9 +100,9 @@ INSERT INTO `key_words` (`id`, `name`, `active`) VALUES
 CREATE TABLE `r_s_s_e_s` (
   `id` int(11) NOT NULL,
   `domainName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `menuTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bodyTag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exceptTag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `menuTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bodyTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exceptTag` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ignoreRSS` text COLLATE utf8mb4_unicode_ci,
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -110,9 +112,9 @@ CREATE TABLE `r_s_s_e_s` (
 --
 
 INSERT INTO `r_s_s_e_s` (`id`, `domainName`, `menuTag`, `bodyTag`, `exceptTag`, `ignoreRSS`, `active`) VALUES
-(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style', 'http://www.24h.com.vn/upload/rss/euro2016.rss', 1),
-(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', NULL, 0),
-(3, 'http://dantri.com.vn/rss.htm', '#listrss > ul > li a', '#divNewsContent', NULL, NULL, 1);
+(1, 'http://www.24h.com.vn/guest/RSS', 'table[height=\"523\"] a', '.text-conent', 'script, style, .bv-lq', 'http://www.24h.com.vn/upload/rss/euro2016.rss', 1),
+(2, 'https://vnexpress.net/rss', '.list_rss > li > .rss_txt', '.content_detail, .fck_detail', 'script, style', NULL, 1),
+(3, 'http://dantri.com.vn/rss.htm', '#listrss > ul > li a', '#divNewsContent', 'script, style', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -141,12 +143,13 @@ INSERT INTO `video_tags` (`id`, `name`) VALUES
 CREATE TABLE `websites` (
   `id` int(11) NOT NULL,
   `domainName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `menuTag` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `menuTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `numberPage` int(11) NOT NULL,
   `limitOfOnePage` int(11) NOT NULL,
-  `stringFirstPage` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `stringLastPage` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `bodyTag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stringFirstPage` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stringLastPage` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bodyTag` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exceptTag` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -154,9 +157,9 @@ CREATE TABLE `websites` (
 -- Dumping data for table `websites`
 --
 
-INSERT INTO `websites` (`id`, `domainName`, `menuTag`, `numberPage`, `limitOfOnePage`, `stringFirstPage`, `stringLastPage`, `bodyTag`, `active`) VALUES
-(1, 'http://www.24h.com.vn', '#zone_footer > ul > li > a', 1, 14, '?vpage=', NULL, '.text-conent', 1),
-(2, 'https://vnexpress.net', '#main_menu > a', 5, 20, '/page/', '.html', '.content_detail', 1);
+INSERT INTO `websites` (`id`, `domainName`, `menuTag`, `numberPage`, `limitOfOnePage`, `stringFirstPage`, `stringLastPage`, `bodyTag`, `exceptTag`, `active`) VALUES
+(1, 'http://www.24h.com.vn', '#zone_footer > ul > li > a', 2, 14, '?vpage=', NULL, '.text-conent', 'script, style, .baiviet-sukien, .bv-lq', 1),
+(2, 'https://vnexpress.net', '#main_menu > a', 2, 20, '/page/', '.html', 'script, style, .content_detail, .fck_detail', '.width_common', 1);
 
 --
 -- Indexes for dumped tables
@@ -210,19 +213,19 @@ ALTER TABLE `websites`
 -- AUTO_INCREMENT for table `contents`
 --
 ALTER TABLE `contents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=734;
 
 --
 -- AUTO_INCREMENT for table `detail_websites`
 --
 ALTER TABLE `detail_websites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `key_words`
 --
 ALTER TABLE `key_words`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `r_s_s_e_s`
@@ -245,12 +248,6 @@ ALTER TABLE `websites`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `contents`
---
-ALTER TABLE `contents`
-  ADD CONSTRAINT `contents_ibfk_1` FOREIGN KEY (`domainName`) REFERENCES `r_s_s_e_s` (`domainName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `detail_websites`

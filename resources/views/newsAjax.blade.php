@@ -26,7 +26,8 @@
     "columnDefs": [ {
     "targets"  : 0,
     "orderable": false,
-    }]
-  } );
+    }],
+    "lengthMenu": [[10, 50, 100, 500, -1], [10, 50, 100, 500, "All"]]
+  });
 });
 </script>

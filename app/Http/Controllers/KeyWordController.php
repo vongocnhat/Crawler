@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\keyword;
+
 class KeyWordController extends Controller
 {
     /**
@@ -93,5 +94,12 @@ class KeyWordController extends Controller
         if($ids != null)
             KeyWord::whereIn('id', $ids)->delete(); 
         return back();
+    }
+
+    public function active(Request $request) {
+        $id = $request->input('id');
+        $model = KeyWord::findorfail($id);
+        $model->active = !$model->active;
+        $model->save();
     }
 }

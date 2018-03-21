@@ -97,4 +97,11 @@ class ContentController extends Controller
             Content::whereIn('id', $ids)->delete(); 
         return back();
     }
+
+    public function active(Request $request) {
+        $id = $request->input('id');
+        $model = Content::findorfail($id);
+        $model->active = !$model->active;
+        $model->save();
+    }
 }

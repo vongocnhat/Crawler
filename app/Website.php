@@ -8,7 +8,7 @@ class Website extends Model
 {
     //
     protected $fillable = [
-        'domainName', 'menuTag', 'numberPage', 'limitOfOnePage', 'stringFirstPage', 'stringLastPage', 'bodyTag', 'active'
+        'domainName', 'menuTag', 'numberPage', 'limitOfOnePage', 'stringFirstPage', 'stringLastPage', 'bodyTag', 'exceptTag', 'active'
     ];
     
     public function DetailWebsites() {

@@ -65,9 +65,11 @@ class RSSController extends Controller
                         }
                         if($checkIgnoreRSS == false)
                             array_push($links, $link);
-                        // echo $links[$i].'</br>';
                     }
                     $this->setSummaryBody($links);
+                    foreach ($links as $key => $link) {
+                        echo ($key+1).': '.$link.'</br>';
+                    }
                     unset($links);
                     $links = [];
                     $this->getNewsRSS($RSS, $keyWords);
@@ -112,11 +114,19 @@ class RSSController extends Controller
             'concurrency' => $this->LoadLimit,
             'fulfilled' => function ($response, $index) {
                 // this is delivered each successful response
-                $str = str_replace('><![CDATA[', '>', $response->getBody());
-                $str = str_replace(']]></', '</', $str);
-                $str = str_replace('<link>', '<linkHref>', $str);
+                $str = str_replace('<link>', '<linkHref>', $response->getBody());
                 $str = str_replace('</link>', '</linkHref>', $str);
+                $str = str_replace('><![CDATA[', '>', $str);
+                $str = str_replace(']]></', '</', $str);
+                
                 $tempDocument = new Crawler($str);
+                // echo $tempDocument->html();
+                if($tempDocument->count() == 0)
+                {
+                    $str = str_replace('<link>', '<linkHref>', $response->getBody());
+                    $str = str_replace('</link>', '</linkHref>', $str);
+                    $tempDocument = new Crawler($str);
+                }
                 if($tempDocument->count() > 0)
                 {
                     $this->summaryBody .= $tempDocument->html();
@@ -159,18 +169,27 @@ class RSSController extends Controller
             {
                 $title = $title->html();
             }
+            else
+                $title = '';
             if($link->count() > 0)
             {
                 $link = $link->html();
             }
-            if($link == '' && $item->filter('guid')->count() > 0)
-                $link = $item->filter('guid')->html();
+            else
+                if($link->count() == 0 && $item->filter('guid')->count() > 0)
+                    $link = $item->filter('guid')->html();
+                else
+                    $link = '';
             $description = $item->filter('description');
             if($description->count() > 0)
                 $description = $description->html();
+            else
+                $description = '';
             $pubDate = $item->filter('pubDate');
             if($pubDate->count() > 0)
                 $pubDate = $pubDate->html();
+            else
+                $pubDate = '';
             // add rss to database
             $available = false;
             foreach ($contents as $key => $item) {
@@ -181,6 +200,7 @@ class RSSController extends Controller
                     break;
                 }
             }
+
             if($available == false)
             {
                 $matchChar = false;
@@ -227,8 +247,14 @@ class RSSController extends Controller
                                 $node->parentNode->removeChild($node);
                             }
                         });
+                    // $sumBody = '';
+                    // for ($j=0; $j < $body->count(); $j++) { 
+                    //     $sumBody .= $body->eq($j)->outerHtml();
+                    // }
+                    // $body = new Crawler($sumBody);
+                    
+                    // có video là dùng iframe khi đó  $content->body = ''
                     $content->body = '';
-                    // cÃ³ video lÃ  dÃ¹ng iframe
                     if($body->count() > 0)
                     {
                         if($this->videoTag != '')
