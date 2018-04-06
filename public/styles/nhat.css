@@ -11,3 +11,10 @@
 .btnDelete {
 	margin-top: 10px;
 }
+.btn {
+	border-radius: 0;
+}
+.btn-image img {
+	width: 130px;
+	height: 100px;
+}

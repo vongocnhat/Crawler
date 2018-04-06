@@ -8,16 +8,14 @@ use App\KeyWord;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $refreshTime = 15;
         $refreshTime *= 1000;
-        return view('home', compact('refreshTime'));
-    }
-
-    public function newsAjax()
-    {
-        $contents = Content::where('active', 1)->orderBy('pubDate', 'DESC')->get();
+        $toDayNewsCount = 0;
+        $searchStr = $request->input('searchStr');
+        // dd ($request);
+        $contents = Content::where('active', 1)->orderBy('pubDate', 'DESC');
         $keyWords = KeyWord::Where('active', 1)->get();
         if($keyWords->count() > 0)
             foreach ($contents as $key => $content) {
@@ -34,22 +32,21 @@ class HomeController extends Controller
                     $contents->forget($key);
                 }
             }
-        $toDayNewsCount = 0;
-        foreach ($contents as $item) {
+        foreach ($contents->get() as $item) {
             $pubDate = date("Y-m-d", strtotime($item->pubDate));
             $toDate = date("Y-m-d");
             if($pubDate == $toDate)
                 $toDayNewsCount++;
         }
-        return view('newsAjax', compact('contents', 'toDayNewsCount'));
+        $contents = $contents->where('title', 'like', '%'.$searchStr.'%')->paginate(5);
+        return view('home', compact('contents', 'toDayNewsCount', 'refreshTime', 'searchStr'));
     }
 
+    //get detail news
     public function getNews(Request $request) {
     	$link = $request->input('href');
     	$content = Content::where('link', $link)->get();
     	foreach ($content as $key => $value) {
-            
-           
             if($value->body == '')
                 echo html_entity_decode('<iframe name="iframe1" id="iframe1" src="'.$value->link.'" height="800px" width="100%" style="overflow: hidden;" frameborder="0" allowfullscreen >');
             else

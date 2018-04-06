@@ -11,7 +11,6 @@
 */
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('newsAjax', 'HomeController@newsAjax')->name('newsAjax');
 // ajax
 Route::get('news', 'HomeController@getNews')->name('getNews');
 Route::get('changeLink/{id}', 'HomeController@changeLink')->name('changeLink');
